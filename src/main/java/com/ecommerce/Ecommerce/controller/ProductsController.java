@@ -22,6 +22,7 @@ public class ProductsController {
 			));
 	@GetMapping("/products")
 	public List<Products> getProducts(){
+		System.out.println("Test"+ prod);
 		return prod;
 	}
 	
