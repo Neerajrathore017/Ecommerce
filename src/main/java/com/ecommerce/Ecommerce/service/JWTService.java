@@ -30,12 +30,12 @@ public class JWTService {
         }
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 // 30 hours validity (milliseconds)
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 30))
@@ -49,6 +49,10 @@ public class JWTService {
         byte[] keyBytes = Decoders.BASE64.decode(secretkey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+    public String extractUserEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -68,9 +72,14 @@ public class JWTService {
                 .getPayload();
     }
 
+//    public boolean validateToken(String token, UserDetails userDetails) {
+//        final String userName = extractUserName(token);
+//        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+//    }
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String email = extractUserEmail(token);
+        System.out.println("[JWTService] Comparing token email: " + email + " with userDetails: " + userDetails.getUsername());
+        return (email.equalsIgnoreCase(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

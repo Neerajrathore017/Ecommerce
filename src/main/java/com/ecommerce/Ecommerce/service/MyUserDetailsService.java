@@ -18,14 +18,22 @@ public class MyUserDetailsService implements UserDetailsService{
 	private UserRepo repo;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		Users user=repo.findByUsername(username);
-		if (user==null) {
-			System.out.println("User not found");
-			throw new UsernameNotFoundException("User nhi mil rha");
-		}
+//		Users user=repo.findByUsername(username);
+//		if (user==null) {
+//			System.out.println("User not found");
+//			throw new UsernameNotFoundException("User nhi mil rha");
+//		}
+		Users user = repo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 		return new UserPrincipal(user);
 	}
+	public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+	    Users user = repo.findByEmail(email)
+	                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+	    return new UserPrincipal(user);
+	}
+
 
 }

@@ -29,8 +29,10 @@ public class UserPrincipal implements UserDetails {
 
 	@Override
 	public String getUsername() {
+		return user.getEmail();
+		
 		// TODO Auto-generated method stub
-		return user.getUsername();
+//		return user.getUsername();
 	}
 
 }
